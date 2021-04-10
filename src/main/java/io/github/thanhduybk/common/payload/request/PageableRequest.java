@@ -1,6 +1,6 @@
-package io.thanhduybk.common.payload.request;
+package io.github.thanhduybk.common.payload.request;
 
-import io.thanhduybk.common.payload.constant.Constant;
+import io.github.thanhduybk.common.payload.constant.Constant;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

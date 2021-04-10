@@ -1,6 +1,6 @@
-package io.thanhduybk.common.payload.response.builder;
+package io.github.thanhduybk.common.payload.response.builder;
 
-import io.thanhduybk.common.payload.response.ListResponse;
+import io.github.thanhduybk.common.payload.response.ListResponse;
 
 import java.util.Collections;
 import java.util.List;

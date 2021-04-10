@@ -1,9 +1,9 @@
-package io.thanhduybk.common.payload.response.builder;
+package io.github.thanhduybk.common.payload.response.builder;
 
-import io.thanhduybk.common.payload.response.RejectResponse;
-import io.thanhduybk.common.payload.response.ResponseCode;
-import io.thanhduybk.common.payload.response.ResponseWrapper;
-import io.thanhduybk.common.payload.response.SimpleResponse;
+import io.github.thanhduybk.common.payload.response.RejectResponse;
+import io.github.thanhduybk.common.payload.response.ResponseCode;
+import io.github.thanhduybk.common.payload.response.ResponseWrapper;
+import io.github.thanhduybk.common.payload.response.SimpleResponse;
 
 public class ResponseBuilder {
     /**

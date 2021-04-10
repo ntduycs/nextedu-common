@@ -1,4 +1,4 @@
-package io.thanhduybk.common.payload.response;
+package io.github.thanhduybk.common.payload.response;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;

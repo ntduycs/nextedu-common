@@ -1,7 +1,7 @@
-package io.thanhduybk.common.payload.response.builder;
+package io.github.thanhduybk.common.payload.response.builder;
 
-import io.thanhduybk.common.payload.constant.Constant;
-import io.thanhduybk.common.payload.response.PageResponse;
+import io.github.thanhduybk.common.payload.constant.Constant;
+import io.github.thanhduybk.common.payload.response.PageResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

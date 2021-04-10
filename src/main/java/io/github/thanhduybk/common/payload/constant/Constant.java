@@ -1,4 +1,4 @@
-package io.thanhduybk.common.payload.constant;
+package io.github.thanhduybk.common.payload.constant;
 
 public class Constant {
     public static final int FIRST_PAGE = 1;
