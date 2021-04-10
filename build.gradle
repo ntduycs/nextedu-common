@@ -1,0 +1,22 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group 'io.thanhduybk'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '2.4.6'
+    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '2.0.2'
+}
+
+test {
+    useJUnitPlatform()
+}
