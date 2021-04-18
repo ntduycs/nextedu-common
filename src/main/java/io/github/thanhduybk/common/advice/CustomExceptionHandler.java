@@ -15,7 +15,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 public class CustomExceptionHandler {
-    private static final Logger log = LoggerFactory.getLogger(CustomExceptionHandler.class);
+    protected final Logger log = LoggerFactory.getLogger(CustomExceptionHandler.class);
 
     protected final MessageFactory messageFactory;
 

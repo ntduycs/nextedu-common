@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Logger log = LoggerFactory.getLogger(CommonExceptionHandler.class);
+    protected final Logger log = LoggerFactory.getLogger(CommonExceptionHandler.class);
 
     protected final MessageFactory messageFactory;
 
