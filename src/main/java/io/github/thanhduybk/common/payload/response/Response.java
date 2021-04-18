@@ -13,6 +13,7 @@ public class Response<T> implements Serializable {
     private T data;
     private String exception;
     private String path;
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
     private final Map<String, String> errors = new HashMap<>();
 
     public ResponseCode getCode() {
