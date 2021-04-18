@@ -6,13 +6,12 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import javax.persistence.EntityManager;
 
 public abstract class BaseRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
-    protected final EntityManager em;
+    protected final EntityManager entityManager;
     protected final JPAQueryFactory queryFactory;
 
-    public BaseRepositoryImpl(Class<T> entityClass, EntityManager em) {
-        super(entityClass, em);
-
-        this.em = em;
-        this.queryFactory = new JPAQueryFactory(em);
+    public BaseRepositoryImpl(Class<T> entityClass, EntityManager entityManager) {
+        super(entityClass, entityManager);
+        this.entityManager = entityManager;
+        this.queryFactory = new JPAQueryFactory(entityManager);
     }
 }
