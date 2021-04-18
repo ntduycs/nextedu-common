@@ -5,12 +5,13 @@ import java.util.Arrays;
 public enum ResponseCode {
     // 2xx
     OK(200),
+    ACCEPTED(202),
     NO_CONTENT(204),
 
     // 4xx
     NOT_FOUND(404),
     UNAUTHORIZED(401),
-    ACCESS_DENIED(403),
+    FORBIDDEN(403),
     BAD_REQUEST(400),
 
     // 5xx
