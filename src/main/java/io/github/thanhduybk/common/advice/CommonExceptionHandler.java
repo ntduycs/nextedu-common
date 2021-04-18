@@ -49,7 +49,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(messageFactory.getMessage("request.method.not-supported", ex.getMethod()))
                 .path(requestPath(request))
                 .exception(ex)
-                .error("requestMethod", messageFactory.getMessage("request.method.not-supported.hint", ex.getMethod(), ex.getSupportedHttpMethods()));
+                .error("method", messageFactory.getMessage("request.method.not-supported.hint", ex.getMethod(), ex.getSupportedHttpMethods()));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
