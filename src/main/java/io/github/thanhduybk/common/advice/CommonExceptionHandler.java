@@ -97,7 +97,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
                 .path(requestPath(request))
                 .exception(ex);
 
-        Map<String, String> errors = new HashMap<>();
+        Map<String, Object> errors = new HashMap<>();
         for (final FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             final Object rejectedValue = fieldError.getRejectedValue();
 
@@ -150,7 +150,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
         log.info("Resolved {} with error {}", ex.getClass().getSimpleName(), ex.getMessage());
 
-        Map<String, String> errors = new HashMap<>();
+        Map<String, Object> errors = new HashMap<>();
 
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
             errors.put(violation.getPropertyPath().toString(), violation.getMessage());

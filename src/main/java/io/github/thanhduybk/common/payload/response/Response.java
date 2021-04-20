@@ -14,7 +14,7 @@ public class Response<T> implements Serializable {
     private String exception;
     private String path;
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
-    private final Map<String, String> errors = new HashMap<>();
+    private final Map<String, Object> errors = new HashMap<>();
 
     public ResponseCode getCode() {
         return code;
@@ -36,7 +36,7 @@ public class Response<T> implements Serializable {
         return path;
     }
 
-    public Map<String, String> getErrors() {
+    public Map<String, Object> getErrors() {
         return errors;
     }
 
@@ -74,7 +74,7 @@ public class Response<T> implements Serializable {
         return this;
     }
 
-    public Response<T> errors(Map<String, String> errors) {
+    public Response<T> errors(Map<String, Object> errors) {
         this.errors.putAll(errors);
         return this;
     }

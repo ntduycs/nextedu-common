@@ -1,5 +1,7 @@
 package io.github.thanhduybk.common.payload.response;
 
+import org.springframework.http.HttpStatus;
+
 import java.util.Arrays;
 
 public enum ResponseCode {
@@ -28,8 +30,8 @@ public enum ResponseCode {
         return code;
     }
 
-    public int toHttpStatus() {
-        return code;
+    public HttpStatus toHttpStatus() {
+        return HttpStatus.valueOf(code);
     }
 
     public static boolean isErrorCode(ResponseCode responseCode) {

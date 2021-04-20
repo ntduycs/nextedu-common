@@ -30,8 +30,8 @@ public class WebCommonUtil {
         page.setSize(origin.getSize());
         page.setTotalElements(origin.getTotalElements());
         page.setTotalPages(origin.getTotalPages());
-        page.setFirst(origin.getNumber() + 1 == Constant.FIRST_PAGE);
-        page.setLast(origin.getNumber() == origin.getTotalPages() - 1);
+        page.setFirst(origin.getNumber() + 1 == Constant.FIRST_PAGE || origin.getTotalPages() == 0);
+        page.setLast(origin.getNumber() == origin.getTotalPages() - 1 || origin.getTotalPages() == 0);
 
         return page;
     }
