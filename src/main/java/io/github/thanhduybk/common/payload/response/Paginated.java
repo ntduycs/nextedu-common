@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PageResponse<T> implements Serializable {
+public class Paginated<T> implements Serializable {
     private List<T> items = new ArrayList<>();
     private Long totalElements;
     private Integer totalPages;

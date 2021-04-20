@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,10 +47,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         Response<?> error = Response.getInstance()
                 .code(ResponseCode.BAD_REQUEST)
-                .message(messageFactory.getMessage("request.method.not-supported", ex.getMethod()))
+                .message("Method " + ex.getMethod() + " not supported under given path")
                 .path(requestPath(request))
                 .exception(ex)
-                .error("method", messageFactory.getMessage("request.method.not-supported.hint", ex.getMethod(), ex.getSupportedHttpMethods()));
+                .error("method", ex.getMethod() + " method not supported. Try with " + Arrays.toString(ex.getSupportedMethods()));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -61,7 +62,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         Response<?> error = Response.getInstance()
                 .code(ResponseCode.BAD_REQUEST)
-                .message(messageFactory.getMessage("request.media-type.not-supported", ex.getContentType()))
+                .message("Media type " + ex.getContentType() + " not supported for given path")
                 .path(requestPath(request))
                 .exception(ex);
 
@@ -73,12 +74,14 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(@NonNull TypeMismatchException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         log.info("Resolved {} with error {}", ex.getClass().getSimpleName(), ex.getMessage());
 
+        String hintMessage = String.format("Should be of type %s but value of type %s was given", ex.getRequiredType(), ex.getValue() != null ? ex.getValue().getClass().getSimpleName() : null);
+
         Response<?> error = Response.getInstance()
                 .code(ResponseCode.BAD_REQUEST)
                 .message(ex.getMostSpecificCause().getMessage())
                 .path(requestPath(request))
                 .exception(ex)
-                .error(ex.getPropertyName(), messageFactory.getMessage("request.body.type-mismatch.hint", ex.getRequiredType(), ex.getValue() != null ? ex.getValue().getClass().getSimpleName() : "null"));
+                .error(ex.getPropertyName(), hintMessage);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -90,7 +93,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         Response<?> error = Response.getInstance()
                 .code(ResponseCode.BAD_REQUEST)
-                .message(messageFactory.getMessage("request.body.invalid-binding"))
+                .message("Request binding just failed. Invalid data was given")
                 .path(requestPath(request))
                 .exception(ex);
 
@@ -99,9 +102,9 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
             final Object rejectedValue = fieldError.getRejectedValue();
 
             if (rejectedValue == null || ClassUtils.isPrimitiveOrWrapper(rejectedValue.getClass()) || rejectedValue instanceof String) {
-                errors.put(fieldError.getField(), messageFactory.getMessage("request.body.invalid-binding.hint-1", fieldError.getRejectedValue()));
+                errors.put(fieldError.getField(), "Was given with invalid " + rejectedValue + " value");
             } else {
-                errors.put(fieldError.getField(), messageFactory.getMessage("request.body.invalid-binding.hint-2"));
+                errors.put(fieldError.getField(), "Was given with invalid value");
             }
         }
 
@@ -121,7 +124,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         Response<?> error = Response.getInstance()
                 .code(ResponseCode.NOT_FOUND)
-                .message(messageFactory.getMessage("request.handler.not-found", ex.getHttpMethod(), ex.getRequestURL()))
+                .message("No handler found for " + ex.getHttpMethod() + " - " + ex.getRequestURL())
                 .exception(ex)
                 .path(requestPath(request));
 
@@ -135,7 +138,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         Response<?> error = Response.getInstance()
                 .code(ResponseCode.BAD_REQUEST)
-                .message(messageFactory.getMessage("request.not-readable"))
+                .message("Request has invalid (non-readable) format. Please check your data")
                 .exception(ex)
                 .path(requestPath(request))
                 .error("request", ex.getMostSpecificCause().getMessage());
@@ -155,7 +158,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         Response<?> error = Response.getInstance()
                 .code(ResponseCode.BAD_REQUEST)
-                .message(messageFactory.getMessage("request.constraint-violation"))
+                .message("Data constraint was violated")
                 .exception(ex)
                 .path(requestPath(request))
                 .errors(errors);

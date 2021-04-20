@@ -7,7 +7,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomError extends DefaultErrorAttributes {
+public class CustomErrorAttributes extends DefaultErrorAttributes {
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
         final Map<String, Object> defaults = super.getErrorAttributes(webRequest, options);
