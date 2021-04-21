@@ -4,10 +4,11 @@ import io.github.thanhduybk.common.payload.constant.Constant;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public abstract class PageableRequest {
@@ -18,9 +19,9 @@ public abstract class PageableRequest {
     @Max(100)
     protected Integer size;
 
-    protected String sort;
+    protected List<String> sorts = new ArrayList<>();
 
-    protected String order;
+    protected List<String> orders = new ArrayList<>();
 
     public int getPage() {
         return page != null ? page : Constant.DEFAULT_PAGE;
@@ -38,35 +39,49 @@ public abstract class PageableRequest {
         this.size = size;
     }
 
-    public String getSort() {
-        return sort;
+    protected List<String> getSorts() {
+        return sorts;
     }
 
-    public String getOrder() {
-        return order;
+    public void setSorts(List<String> sorts) {
+        this.sorts = sorts;
     }
 
-    public void setOrder(String order) {
-        this.order = order;
+    protected List<String> getOrders() {
+        return orders;
     }
 
-    private Sort getSortObject() {
-        if (!StringUtils.hasText(sort) || !getSortableFields().contains(sort)) {
-            return Sort.unsorted();
-        }
-
-        return isValidOrder() ? Sort.by(order, sort) : Sort.by(Sort.Direction.ASC, sort);
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
+    public void setOrders(List<String> orders) {
+        this.orders = orders;
     }
 
     public Pageable getPageable() {
         return PageRequest.of(getPage() - 1, getSize(), getSortObject());
     }
 
-    protected boolean isValidOrder() {
+    protected Sort getSortObject() {
+        if (sorts == null || sorts.isEmpty()) {
+            return Sort.unsorted();
+        }
+
+        int orderSize = orders == null ? 0 : orders.size();
+
+        List<Sort.Order> sortOrders = new ArrayList<>();
+
+        for (int i = 0, sortsSize = sorts.size(); i < sortsSize; i++) {
+            String sort = sorts.get(i);
+
+            if (i < orderSize && isValidOrder(orders.get(i)) && getSortableFields().contains(sort)) {
+                sortOrders.add(new Sort.Order(Sort.Direction.fromString(orders.get(i)), sort));
+            }
+
+            if (i >= orderSize) break;
+        }
+
+        return Sort.by(sortOrders);
+    }
+
+    protected boolean isValidOrder(String order) {
         return Sort.Direction.fromOptionalString(order).isPresent();
     }
 
