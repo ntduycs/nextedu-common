@@ -15,10 +15,12 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.util.ClassUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -88,6 +90,22 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     @NonNull
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+        log.info("Resolved {} with {} field errors and {} global errors", ex.getClass().getSimpleName(), ex.getFieldErrorCount(), ex.getGlobalErrorCount());
+
+        Response<?> error = Response.getInstance()
+                .code(ResponseCode.BAD_REQUEST)
+                .message("Request validation just failed. Invalid data was given")
+                .path(requestPath(request))
+                .exception(ex);
+
+        error.errors(resolveBindingErrors(ex.getBindingResult()));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @Override
+    @NonNull
     protected ResponseEntity<Object> handleBindException(@NonNull BindException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         log.info("Resolved {} with error {}", ex.getClass().getSimpleName(), ex.getMessage());
 
@@ -97,8 +115,15 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
                 .path(requestPath(request))
                 .exception(ex);
 
+        error.errors(resolveBindingErrors(ex.getBindingResult()));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    private Map<String, Object> resolveBindingErrors(BindingResult bindingErrors) {
         Map<String, Object> errors = new HashMap<>();
-        for (final FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+
+        for (final FieldError fieldError : bindingErrors.getFieldErrors()) {
             final Object rejectedValue = fieldError.getRejectedValue();
 
             if (rejectedValue == null || ClassUtils.isPrimitiveOrWrapper(rejectedValue.getClass()) || rejectedValue instanceof String) {
@@ -108,13 +133,11 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
             }
         }
 
-        for (final ObjectError objectError : ex.getBindingResult().getGlobalErrors()) {
+        for (final ObjectError objectError : bindingErrors.getGlobalErrors()) {
             errors.put(objectError.getObjectName(), objectError.getDefaultMessage());
         }
 
-        error.errors(errors);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return errors;
     }
 
     @Override
