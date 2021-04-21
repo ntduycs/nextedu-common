@@ -8,9 +8,9 @@ import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import java.util.Set;
 
-public class PageableRequest {
+public abstract class PageableRequest {
     @Min(1)
     protected Integer page;
 
@@ -18,8 +18,9 @@ public class PageableRequest {
     @Max(100)
     protected Integer size;
 
-    @Pattern(regexp = "^[A-Za-z]+,(asc|desc)$", message = "must in form of \"prop,(asc|desc)\", example: \"updatedAt,desc\"")
     protected String sort;
+
+    protected String order;
 
     public int getPage() {
         return page != null ? page : Constant.DEFAULT_PAGE;
@@ -41,16 +42,20 @@ public class PageableRequest {
         return sort;
     }
 
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
     private Sort getSortObject() {
-        if (!StringUtils.hasText(sort)) {
+        if (!StringUtils.hasText(sort) || !getSortableFields().contains(sort)) {
             return Sort.unsorted();
         }
 
-        String[] sortCriteria = sort.split(",", 2);
-
-        return sortCriteria.length < 2
-                ? Sort.unsorted()
-                : Sort.by(Sort.Direction.valueOf(sortCriteria[1].toUpperCase()), sortCriteria[0]);
+        return isValidOrder() ? Sort.by(order, sort) : Sort.by(Sort.Direction.ASC, sort);
     }
 
     public void setSort(String sort) {
@@ -60,4 +65,10 @@ public class PageableRequest {
     public Pageable getPageable() {
         return PageRequest.of(getPage() - 1, getSize(), getSortObject());
     }
+
+    protected boolean isValidOrder() {
+        return Sort.Direction.fromOptionalString(order).isPresent();
+    }
+
+    protected abstract Set<String> getSortableFields();
 }
