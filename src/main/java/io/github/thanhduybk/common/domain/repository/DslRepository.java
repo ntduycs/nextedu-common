@@ -12,4 +12,8 @@ public abstract class DslRepository<T> {
         this.entityManager = entityManager;
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 }
