@@ -214,12 +214,13 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
         log.info("Resolved {} with error {}", ex.getClass().getSimpleName(), ex.getMessage());
 
         Response<?> error = Response.getInstance()
-                .code(ResponseCode.BAD_REQUEST)
+                .code(ResponseCode.UNEXPECTED_ERROR)
                 .message(ex.getMessage())
                 .path(requestPath(request))
+                .error("debugMessage", ex.getCause() != null ? ex.getCause().getMessage() : ex.getLocalizedMessage())
                 .exception(ex);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
     protected String requestPath(WebRequest request) {
